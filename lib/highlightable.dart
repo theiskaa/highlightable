@@ -2,6 +2,33 @@ library highlightable;
 
 import 'package:flutter/material.dart';
 
+/// ### A text widget that makes easy to highlight any letter/word you want.
+/// 
+/// **Very basic usage:**
+/// 
+/// ```dart
+/// HighlightText(
+///   'Hello World',
+///   highlightableWord: 'hello',
+/// ),
+/// ```
+/// **Customized usage:**
+/// 
+/// ```dart
+/// HighlightText(
+///   'Hello World',
+///   highlightableWord: 'hello',
+///   defaultStyle: TextStyle(
+///     fontSize: 17,
+///     color: Colors.black,
+///   ),
+///   highlightStyle: TextStyle(
+///     fontSize: 18,
+///     color: Colors.blue,
+///     fontWeight: FontWeight.w800,
+///   ),
+/// ),
+/// ```
 class HighlightText extends StatefulWidget {
   /// A string which is default text. Like [Text] widget's first required value.
   ///
@@ -31,7 +58,7 @@ class HighlightText extends StatefulWidget {
     this.actualText, {
     Key? key,
     required this.highlightableWord,
-    this.defaultStyle = const TextStyle(color: Colors.white),
+    this.defaultStyle = const TextStyle(color: Colors.black),
     this.highlightStyle = const TextStyle(
       color: Colors.blue,
       fontWeight: FontWeight.bold,
@@ -65,7 +92,7 @@ class HighlightTextState extends State<HighlightText> {
 
   void generateSubStrings() {
     if (highlightableLetters.isEmpty) return;
-    
+
     for (var i = 0; i < widget.actualText.length; i++) {
       var l = widget.actualText[i];
 
