@@ -80,27 +80,34 @@ class HighlightTextState extends State<HighlightText> {
   // List which contains all searchable values by each letter.
   // If the given [highlightableWord] is String then it will automatically split string one by one,
   // So it'll generate an letter's array which [highlightableWord] contains.
-  List<String> highlightableLetters = [];
+  List<String> highlightableLetters = [], matchers = [];
 
   @override
   void initState() {
     if (widget.highlightableWord is String) {
       highlightableLetters = widget.highlightableWord.toString().split("");
+      matchers = '${widget.highlightableWord}'.toLowerCase().split("");
     } else {
       highlightableLetters = widget.highlightableWord;
+      matchers = widget.highlightableWord
+          .map<String>((l) => '$l'.toLowerCase())
+          .toList();
     }
     generateSubStrings();
     super.initState();
   }
 
+  // Just checks if given s is upper cased or not.
+  bool isUpperCase(l) => l.toUpperCase() == l;
+
   void generateSubStrings() {
     if (highlightableLetters.isEmpty) return;
 
     for (var i = 0; i < widget.actualText.length; i++) {
-      var l = widget.actualText[i];
+      String l = widget.actualText[i];
 
       // Just determine it matchs or not and append appreciate [TextStyle];
-      TextStyle rightStyle = highlightableLetters.contains(l)
+      TextStyle rightStyle = (matchers.contains(l.toLowerCase()) && l != ' ')
           ? widget.highlightStyle
           : widget.defaultStyle;
 

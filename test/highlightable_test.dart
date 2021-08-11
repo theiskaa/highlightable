@@ -46,13 +46,19 @@ void main() {
 
         // Look at each letter's style if highlighted correctly
         for (var i = 0; i < actualText.length; i++) {
+          String l = actualText[i];
+
           expect(
             state.subStrings[i].style!,
-            state.highlightableLetters.contains(actualText[i])
+            state.matchers.contains(l.toLowerCase()) && l != ' '
                 ? highlightText.highlightStyle
                 : highlightText.defaultStyle,
           );
         }
+
+        // A part which tests state's [isUpperCase] function.
+        expect(state.isUpperCase('L'), true);
+        expect(state.isUpperCase('i'), false);
       },
     );
 

@@ -31,7 +31,7 @@ HighlightText(
 ),
 ```
 
-<img width="200" alt="s1" src="https://user-images.githubusercontent.com/59066341/129022549-25bd74a7-e6de-48fe-af4e-bda99106be27.png">
+<img width="200" alt="s1" src="https://user-images.githubusercontent.com/59066341/129080679-bfb97d11-93c5-4258-b271-0e0918e3bc22.png">
 
 ### Custom usage
 
@@ -52,4 +52,4 @@ HighlightText(
 ),
 ```
 
-<img width="220" alt="stwo" src="https://user-images.githubusercontent.com/59066341/129023374-5b406cff-1737-4942-805e-b178e165e6f0.png">
+<img width="220" alt="stwo" src="https://user-images.githubusercontent.com/59066341/129080998-b56348be-9c39-487f-a0c6-165895e98e88.png">
