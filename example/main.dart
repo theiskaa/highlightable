@@ -17,11 +17,17 @@ class Home extends StatelessWidget {
       appBar: AppBar(title: Text("Highlightable Examples")),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Very basic usage:
             HighlightText(
               'Hello World',
               highlightableWord: 'hello',
+              defaultStyle: TextStyle(fontSize: 25, color: Colors.black),
+              highlightStyle: TextStyle(
+                fontSize: 25,
+                color: Colors.blue,
+              ),
             ),
 
             const SizedBox(height: 50),
