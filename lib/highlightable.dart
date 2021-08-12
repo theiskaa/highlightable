@@ -57,6 +57,14 @@ class HighlightText extends StatefulWidget {
   /// And it automatically will be integrated with non-matcher values.
   final TextStyle defaultStyle;
 
+  /// **Changes widget's highlight rendering function.**
+  ///
+  /// If it's `true` then widget will highlight only given concrete words.
+  ///
+  /// So that means, then [highlightableWord] should be like: `"hello", "world"` or `"hello world"`.
+  /// And other letters which [highlightableWord] contains won't be highlighted.
+  final bool onlyWords;
+
   HighlightText(
     this.actualText, {
     Key? key,
@@ -66,6 +74,7 @@ class HighlightText extends StatefulWidget {
       color: Colors.blue,
       fontWeight: FontWeight.w600,
     ),
+    this.onlyWords = false,
   }) : super(key: key);
 
   @override
@@ -84,39 +93,93 @@ class HighlightTextState extends State<HighlightText> {
 
   @override
   void initState() {
-    if (widget.highlightableWord is String) {
-      highlightableLetters = widget.highlightableWord.toString().split("");
-      matchers = '${widget.highlightableWord}'.toLowerCase().split("");
-    } else {
-      highlightableLetters = widget.highlightableWord;
-      matchers = widget.highlightableWord
-          .map<String>((l) => '$l'.toLowerCase())
-          .toList();
-    }
+    filterHighlightableWord();
     generateSubStrings();
     super.initState();
   }
 
-  // Just checks if given s is upper cased or not.
+  // Converts highlightableWord and fills [highlightableLetters] & [matchers].
+  void filterHighlightableWord() {
+    if (widget.highlightableWord is String) {
+      // Creates correct pattern appreciate [onlyWords].
+      var splitPattern = widget.onlyWords ? " " : "";
+
+      highlightableLetters = '${widget.highlightableWord}'.split(splitPattern);
+
+      // Matchers should be splited as lovercase to test matching easily.
+      matchers =
+          '${widget.highlightableWord}'.toLowerCase().split(splitPattern);
+      return;
+    }
+
+    // Directly append [widget.highlightableWord] to highlightableLetters.
+    // Because it have to be Array. Above we've checked if it's string.
+    // So if program had reached here it must to be String.
+    highlightableLetters = widget.highlightableWord;
+
+    // Matcher letters should be splited as lovercase to test matching easily.
+    matchers = widget.highlightableWord
+        .map<String>((l) => '$l'.toLowerCase())
+        .toList();
+  }
+
+  // Just checks if given String/Letter is upper cased or not.
   bool isUpperCase(l) => l.toUpperCase() == l;
 
+  // Generates [TextSpan]'s for main [RichText] - appreciate [onlyWords].
   void generateSubStrings() {
     if (highlightableLetters.isEmpty) return;
 
-    for (var i = 0; i < widget.actualText.length; i++) {
-      String l = widget.actualText[i];
+    if (widget.onlyWords) {
+      // We have actual list, because we have to highligh the original text (So [widget.actualText]).
+      var actual = '${widget.actualText}'.split(" ");
 
-      // Just determine it matchs or not and append appreciate [TextStyle];
-      TextStyle rightStyle = (matchers.contains(l.toLowerCase()) && l != ' ')
-          ? widget.highlightStyle
-          : widget.defaultStyle;
+      for (var i = 0; i < actual.length; i++) {
+        // Matcher could contain less item than actual. So that's why also we have [matched] val.
+        // If current index + 1 is equals or less than [matchers.length]; that means,
+        // If we try to return matcher's current indexed item we won't get null, So we should return it.
+        // Unless return just empty string. Because down below we check if current actual contains or not [matched].
+        // When it's empty string then current actual shouldn't contain [matched] anymore.
+        // However, It'll add current actual with [widget.defaultStyle].
+        var matched = i + 1 <= matchers.length ? matchers[i] : '';
 
-      subStrings.add(TextSpan(text: l, style: rightStyle));
+        // If current actual doesn't contain [matched] val.
+        // We should add current actual with default style.
+        if (!actual[i].toLowerCase().contains(matched)) {
+          subStrings.add(TextSpan(text: actual[i], style: widget.defaultStyle));
+        } else {
+          for (var j = 0; j < actual[i].length; j++) {
+            String l = actual[i][j];
 
-      // We shouldn't pass methods/functions into setState.
-      // So that's why our setState was left blank.
-      setState(() {});
+            // Just determine it matchs or not and append appreciate [TextStyle];
+            TextStyle rightStyle =
+                (matched.split('').contains(l.toLowerCase()) && l != ' ')
+                    ? widget.highlightStyle
+                    : widget.defaultStyle;
+
+            subStrings.add(TextSpan(text: l, style: rightStyle));
+          }
+
+          // After each word we have to add a string which contains only one empty space.
+          subStrings.add(TextSpan(text: ' ', style: widget.defaultStyle));
+        }
+      }
+    } else {
+      for (var i = 0; i < widget.actualText.length; i++) {
+        String l = widget.actualText[i];
+
+        // Just determine it matchs or not and append appreciate [TextStyle];
+        TextStyle rightStyle = (matchers.contains(l.toLowerCase()) && l != ' ')
+            ? widget.highlightStyle
+            : widget.defaultStyle;
+
+        subStrings.add(TextSpan(text: l, style: rightStyle));
+      }
     }
+
+    // We shouldn't pass methods/functions into setState.
+    // So that's why our setState was left blank.
+    setState(() {});
   }
 
   @override
