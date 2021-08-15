@@ -1,6 +1,6 @@
 <p align="center">
   <br>
- <img width="500" src="https://user-images.githubusercontent.com/59066341/129020944-6be3379a-fc3e-4c2c-aeea-ce476fd93aae.png" alt="Package Logo">
+ <img width="500" src="https://user-images.githubusercontent.com/59066341/129483451-4196e1bb-f094-4b3c-aefc-41d77aff8117.png" alt="Package Logo">
  <br>
   <br>
  <a href="https://github.com/theiskaa/field_suggestion">
@@ -19,8 +19,9 @@
 
 First, `actualText` property and `highlightableWord` property are required.
 You can customize `actualText` by providing `defaultStyle`. Also you can customize highlighted text style by `highlightStyle` property.
-`highlightableWord` poperty should be "Text splited array". E.g - `"hi".split("")` it will return an array like: `["h", "i"]`.
-Otherwise, it could be a string, the widget automatically will convert it to array.
+`highlightableWord` poperty could be string array or just string with spaces. 
+
+You can enable word detection to focus on concrete matcher word. See "Custom usage" part for example.
 
 ### Very basic usage
 
@@ -37,19 +38,22 @@ HighlightText(
 
 ```dart     
 HighlightText(
-   'Hello Flutter',
-   highlightableWord: 'hello',
-   defaultStyle: TextStyle(
-      fontSize: 25,
-      color: Colors.black,
-   ),
-   highlightStyle: TextStyle(
-      fontSize: 25,
-      letterSpacing: 2.5,
-      color: Colors.white,
-      backgroundColor: Colors.blue,
-   ),
+  "Hello, Flutter!",
+  highlightableWord: "flu, He",
+  detectWords: true,
+  defaultStyle: TextStyle(
+    fontSize: 25,
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+  ),
+  highlightStyle: TextStyle(
+    fontSize: 25,
+    letterSpacing: 2.5,
+    color: Colors.white,
+    backgroundColor: Colors.blue,
+    fontWeight: FontWeight.bold,
+  ),
 ),
 ```
 
-<img width="220" alt="stwo" src="https://user-images.githubusercontent.com/59066341/129080998-b56348be-9c39-487f-a0c6-165895e98e88.png">
+<img width="220" alt="stwo" src="https://user-images.githubusercontent.com/59066341/129483513-c379f0d6-d5ba-43e1-a2d7-0722aeb5dafa.png">

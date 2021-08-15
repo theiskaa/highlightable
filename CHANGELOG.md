@@ -1,3 +1,23 @@
+## 1.0.2 - (15/08/21)
+
+- Added `detectWord` property to focus on concrete matcher words
+
+#### Example:
+
+```dart     
+HighlightText(
+  "Hello, Flutter!",
+  highlightableWord: "flu, He",
+  detectWords: true,
+  defaultStyle: ...
+  highlightStyle: ...
+),
+```
+
+<img width="200" alt="stwo" src="https://user-images.githubusercontent.com/59066341/129483513-c379f0d6-d5ba-43e1-a2d7-0722aeb5dafa.png">
+
+---
+
 ## 1.0.1 - (11/08/21)
 
 - Fixed lower/upper case matching problem
