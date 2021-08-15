@@ -3,7 +3,7 @@
  <img width="500" src="https://user-images.githubusercontent.com/59066341/129483451-4196e1bb-f094-4b3c-aefc-41d77aff8117.png" alt="Package Logo">
  <br>
   <br>
- <a href="https://github.com/theiskaa/field_suggestion">
+ <a href="https://pub.dev/packages/field_suggestion">
    <img src="https://img.shields.io/badge/Special%20Made%20for-FieldSuggestion-blue" alt="License: MIT"/>
  </a>
  <a href="https://github.com/theiskaa/highlightable-text/blob/main/LICENSE">
