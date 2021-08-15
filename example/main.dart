@@ -21,7 +21,7 @@ class Home extends StatelessWidget {
           children: [
             // Very basic usage:
             HighlightText(
-              'Hello Flutter',
+              'Hello World',
               highlightableWord: 'hello',
               defaultStyle: TextStyle(fontSize: 25, color: Colors.black),
               highlightStyle: TextStyle(
