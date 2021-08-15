@@ -34,14 +34,20 @@ class Home extends StatelessWidget {
 
             // Custom Usage
             HighlightText(
-              'Hello Flutter',
-              highlightableWord: 'hello',
-              defaultStyle: TextStyle(fontSize: 25, color: Colors.black),
+              "Hello, Flutter!",
+              highlightableWord: "flu, He",
+              detectWords: true,
+              defaultStyle: TextStyle(
+                fontSize: 25,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
               highlightStyle: TextStyle(
                 fontSize: 25,
                 letterSpacing: 2.5,
                 color: Colors.white,
                 backgroundColor: Colors.blue,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],

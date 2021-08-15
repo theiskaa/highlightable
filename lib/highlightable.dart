@@ -2,7 +2,7 @@ library highlightable;
 
 import 'package:flutter/material.dart';
 
-/// ### A text widget that makes easy to highlight any letter/word you want.
+/// ### Widget which makes easy to highlight any letter/word  you want.
 ///
 /// **Very basic usage:**
 ///
@@ -16,17 +16,18 @@ import 'package:flutter/material.dart';
 ///
 /// ```dart
 /// HighlightText(
-///   'Hello Flutter',
-///   highlightableWord: 'hello',
+///   "Hello, Flutter!",
+///   detectWords: true,
+///   highlightableWord: "flu, He",
 ///   defaultStyle: TextStyle(
-///     fontSize: 17,
+///     fontSize: 25,
 ///     color: Colors.black,
 ///     fontWeight: FontWeight.bold,
 ///   ),
 ///   highlightStyle: TextStyle(
-///     fontSize: 17,
+///     fontSize: 25,
 ///     letterSpacing: 2.5,
-///     color: Colors.black,
+///     color: Colors.white,
 ///     backgroundColor: Colors.blue,
 ///     fontWeight: FontWeight.bold,
 ///   ),
@@ -57,6 +58,14 @@ class HighlightText extends StatefulWidget {
   /// And it automatically will be integrated with non-matcher values.
   final TextStyle defaultStyle;
 
+  /// **Changes widget's highlightable letters rendering function.**
+  ///
+  /// If it's `true` then widget will highlight only given concrete words.
+  ///
+  /// So that means, then [highlightableWord] should be like: `"hello", "world"` or `"hello world"`.
+  /// And other letters which [highlightableWord] contains won't be highlighted.
+  final bool detectWords;
+
   HighlightText(
     this.actualText, {
     Key? key,
@@ -66,6 +75,7 @@ class HighlightText extends StatefulWidget {
       color: Colors.blue,
       fontWeight: FontWeight.w600,
     ),
+    this.detectWords = false,
   }) : super(key: key);
 
   @override
@@ -84,39 +94,97 @@ class HighlightTextState extends State<HighlightText> {
 
   @override
   void initState() {
-    if (widget.highlightableWord is String) {
-      highlightableLetters = widget.highlightableWord.toString().split("");
-      matchers = '${widget.highlightableWord}'.toLowerCase().split("");
-    } else {
-      highlightableLetters = widget.highlightableWord;
-      matchers = widget.highlightableWord
-          .map<String>((l) => '$l'.toLowerCase())
-          .toList();
-    }
+    filterHighlightableWord();
     generateSubStrings();
     super.initState();
   }
 
-  // Just checks if given s is upper cased or not.
+  // Just checks if given string/letter is upper cased or not.
   bool isUpperCase(l) => l.toUpperCase() == l;
 
+  // Generates new TextSpan and adds it to subStrings list.
+  void addStr(String str, [TextStyle? style]) {
+    var span = TextSpan(text: str, style: style ?? widget.defaultStyle);
+    subStrings.add(span);
+  }
+
+  // Converts [highlightableWord] and fills [highlightableLetters] & [matchers].
+  void filterHighlightableWord() {
+    if (widget.highlightableWord is String) {
+      // Creates correct pattern appreciate [detectWords].
+      var splitPattern = widget.detectWords ? " " : "";
+
+      highlightableLetters = '${widget.highlightableWord}'.split(splitPattern);
+
+      // Matchers should be splited as lovercase to test matching easily.
+      matchers = '${widget.highlightableWord}'
+          .toLowerCase()
+          .replaceAll(',', '')
+          .split(splitPattern);
+
+      return;
+    }
+
+    // Directly append [widget.highlightableWord] to highlightableLetters.
+    // Because it have to be Array. Above we've checked if it's string.
+    // So if program had reached here it must to be String.
+    highlightableLetters = widget.highlightableWord;
+
+    // Matcher letters should be splited as lovercase to test matching easily.
+    matchers = widget.highlightableWord
+        .map<String>((l) => '$l'.toLowerCase().replaceAll(',', ''))
+        .toList();
+  }
+
+  // Generates [TextSpan]'s for main [RichText] - appreciate [detectWords].
   void generateSubStrings() {
     if (highlightableLetters.isEmpty) return;
 
-    for (var i = 0; i < widget.actualText.length; i++) {
-      String l = widget.actualText[i];
+    // When need to highligh all letters what matchers includes
+    if (!widget.detectWords) {
+      addRightSpan(widget.actualText, matchers);
+      setState(() {});
+      return;
+    }
+
+    // We create "actual" list, because we have to highligh the original text (So [widget.actualText]).
+    var actual = '${widget.actualText}'.split(" ");
+
+    for (var i = 0; i < actual.length; i++) {
+      addRightSpan(actual[i].toString(), findMatcherLetters(actual[i]));
+      addStr(' ');
+    }
+
+    // We shouldn't pass methods/functions into setState.
+    // So that's why our setState was had left blank.
+    setState(() {});
+  }
+
+  // Basicaly, we use [addRightSpan] function to highlight concrete word.
+  // Loops through given actual and looks if current index value of actual are, or not in matchers list.
+  void addRightSpan(dynamic actual, dynamic mtch) {
+    for (var i = 0; i < actual.length; i++) {
+      String l = actual[i];
 
       // Just determine it matchs or not and append appreciate [TextStyle];
-      TextStyle rightStyle = (matchers.contains(l.toLowerCase()) && l != ' ')
+      TextStyle style = widget.defaultStyle;
+
+      style = (mtch.contains(l.toLowerCase()) && l != ' ')
           ? widget.highlightStyle
           : widget.defaultStyle;
 
-      subStrings.add(TextSpan(text: l, style: rightStyle));
-
-      // We shouldn't pass methods/functions into setState.
-      // So that's why our setState was left blank.
-      setState(() {});
+      addStr(l, style);
     }
+  }
+
+  // Function which finds and returns found matcher.
+  List<String> findMatcherLetters(dynamic actual) {
+    var matcher = matchers.where(
+      (m) => actual.toString().toLowerCase().contains(m.toLowerCase()),
+    );
+
+    if ('$matcher' == '()') return []; // Means couldn't found matcher
+    return '$matcher'.replaceAll('(', '').replaceAll(')', '').split('');
   }
 
   @override
