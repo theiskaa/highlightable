@@ -36,8 +36,8 @@ class Home extends StatelessWidget {
             HighlightText(
               "Hello, Flutter!",
               highlightable: "Flu, He",
-              caseSensitive: true,
-              detectWords: true,
+              caseSensitive: true, // Turn on case-sensitive.
+              detectWords: true, // Turn on only full word hightlighting.
               defaultStyle: TextStyle(
                 fontSize: 25,
                 color: Colors.black,
