@@ -22,7 +22,7 @@ class Home extends StatelessWidget {
             // Very basic usage:
             HighlightText(
               'Hello World',
-              highlightableWord: 'hello',
+              highlightable: 'hello',
               defaultStyle: TextStyle(fontSize: 25, color: Colors.black),
               highlightStyle: TextStyle(
                 fontSize: 25,
@@ -35,8 +35,9 @@ class Home extends StatelessWidget {
             // Custom Usage
             HighlightText(
               "Hello, Flutter!",
-              highlightableWord: "flu, He",
-              detectWords: true,
+              highlightable: "Flu, He",
+              caseSensitive: true, // Turn on case-sensitive.
+              detectWords: true, // Turn on only full word hightlighting.
               defaultStyle: TextStyle(
                 fontSize: 25,
                 color: Colors.black,

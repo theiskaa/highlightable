@@ -39,8 +39,9 @@ HighlightText(
 ```dart     
 HighlightText(
   "Hello, Flutter!",
-  highlightableWord: "flu, He",
-  detectWords: true,
+  highlightable: "Flu, He",
+  caseSensitive: true, // Turn on case-sensitive.
+  detectWords: true, // Turn on only full word hightlighting.
   defaultStyle: TextStyle(
     fontSize: 25,
     color: Colors.black,
