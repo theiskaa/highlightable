@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// ```dart
 /// HighlightText(
 ///   'Hello World',
-///   highlightableWord: 'hello',
+///   highlightable: 'hello',
 /// ),
 /// ```
 /// **Custom usage:**
@@ -17,8 +17,9 @@ import 'package:flutter/material.dart';
 /// ```dart
 /// HighlightText(
 ///   "Hello, Flutter!",
+///   highlightable: "Flu, He",
 ///   detectWords: true,
-///   highlightableWord: "flu, He",
+///   caseSensitive: true,
 ///   defaultStyle: TextStyle(
 ///     fontSize: 25,
 ///     color: Colors.black,
@@ -44,7 +45,7 @@ class HighlightText extends StatefulWidget {
   /// It would be used to generate [TextSpan]s for main [RichText].
   ///
   /// To manage highlighted word/letter's style you can use [highlightStyle] property
-  final dynamic highlightableWord;
+  final dynamic highlightable;
 
   /// The style for words/letters which gonna be highlighted.
   ///
@@ -62,20 +63,27 @@ class HighlightText extends StatefulWidget {
   ///
   /// If it's `true` then widget will highlight only given concrete words.
   ///
-  /// So that means, then [highlightableWord] should be like: `"hello", "world"` or `"hello world"`.
-  /// And other letters which [highlightableWord] contains won't be highlighted.
+  /// So that means, then [highlightable] should be like: `"hello", "world"` or `"hello world"`.
+  /// And other letters which [highlightable] contains won't be highlighted.
   final bool detectWords;
+
+  /// **Enables case sensitive**
+  ///
+  /// If it's `true`, then widget enables case sensitive on highlighting functionality.
+  /// As default it's `false` so, disabled.
+  final bool caseSensitive;
 
   HighlightText(
     this.actualText, {
     Key? key,
-    required this.highlightableWord,
+    required this.highlightable,
     this.defaultStyle = const TextStyle(color: Colors.black),
     this.highlightStyle = const TextStyle(
       color: Colors.blue,
       fontWeight: FontWeight.w600,
     ),
     this.detectWords = false,
+    this.caseSensitive = false,
   }) : super(key: key);
 
   @override
@@ -88,13 +96,13 @@ class HighlightTextState extends State<HighlightText> {
   List<InlineSpan> subStrings = [];
 
   // List which contains all searchable values by each letter.
-  // If the given [highlightableWord] is String then it will automatically split string one by one,
-  // So it'll generate an letter's array which [highlightableWord] contains.
+  // If the given [highlightable] is String then it will automatically split string one by one,
+  // So it'll generate an letter's array which [highlightable] contains.
   List<String> highlightableLetters = [], matchers = [];
 
   @override
   void initState() {
-    filterHighlightableWord();
+    filterHighlightable();
     generateSubStrings();
     super.initState();
   }
@@ -108,16 +116,21 @@ class HighlightTextState extends State<HighlightText> {
     subStrings.add(span);
   }
 
-  // Converts [highlightableWord] and fills [highlightableLetters] & [matchers].
-  void filterHighlightableWord() {
-    if (widget.highlightableWord is String) {
+  // Converts [highlightable] and fills [highlightableLetters] & [matchers].
+  void filterHighlightable() {
+    if (widget.highlightable is String) {
       // Creates correct pattern appreciate [detectWords].
       var splitPattern = widget.detectWords ? " " : "";
 
-      highlightableLetters = '${widget.highlightableWord}'.split(splitPattern);
+      highlightableLetters = '${widget.highlightable}'.split(splitPattern);
 
-      // Matchers should be splited as lovercase to test matching easily.
-      matchers = '${widget.highlightableWord}'
+      // Choose split-able matchers appropriate by case sensitive status.
+      if (widget.caseSensitive) {
+        matchers = widget.highlightable.replaceAll(',', '').split(splitPattern);
+        return;
+      }
+
+      matchers = widget.highlightable
           .toLowerCase()
           .replaceAll(',', '')
           .split(splitPattern);
@@ -125,15 +138,16 @@ class HighlightTextState extends State<HighlightText> {
       return;
     }
 
-    // Directly append [widget.highlightableWord] to highlightableLetters.
+    // Directly append [widget.highlightable] to highlightableLetters.
     // Because it have to be Array. Above we've checked if it's string.
     // So if program had reached here it must to be String.
-    highlightableLetters = widget.highlightableWord;
+    highlightableLetters = widget.highlightable;
 
     // Matcher letters should be splited as lovercase to test matching easily.
-    matchers = widget.highlightableWord
-        .map<String>((l) => '$l'.toLowerCase().replaceAll(',', ''))
-        .toList();
+    matchers = widget.highlightable.map<String>((String letter) {
+      if (widget.caseSensitive) return letter.replaceAll(',', '');
+      return letter.toLowerCase().replaceAll(',', '');
+    }).toList();
   }
 
   // Generates [TextSpan]'s for main [RichText] - appreciate [detectWords].
@@ -147,11 +161,11 @@ class HighlightTextState extends State<HighlightText> {
       return;
     }
 
-    // We create "actual" list, because we have to highligh the original text (So [widget.actualText]).
-    var actual = '${widget.actualText}'.split(" ");
+    // We create "actual" list, because we have to highlight the original text (So [widget.actualText]).
+    var actual = widget.actualText.split(' ');
 
     for (var i = 0; i < actual.length; i++) {
-      addRightSpan(actual[i].toString(), findMatcherLetters(actual[i]));
+      addRightSpan(actual[i], findMatcherLetters(actual[i]));
       addStr(' ');
     }
 
@@ -164,26 +178,34 @@ class HighlightTextState extends State<HighlightText> {
   // Loops through given actual and looks if current index value of actual are, or not in matchers list.
   void addRightSpan(dynamic actual, dynamic mtch) {
     for (var i = 0; i < actual.length; i++) {
-      String l = actual[i];
+      final String l = actual[i];
 
       // Just determine it matchs or not and append appreciate [TextStyle];
       TextStyle style = widget.defaultStyle;
 
-      style = (mtch.contains(l.toLowerCase()) && l != ' ')
-          ? widget.highlightStyle
-          : widget.defaultStyle;
+      bool condition = false;
+      if (widget.caseSensitive) {
+        condition = mtch.contains(l);
+      } else {
+        condition = mtch.contains(l.toLowerCase());
+      }
+
+      if (condition && l != ' ') style = widget.highlightStyle;
 
       addStr(l, style);
     }
   }
 
   // Function which finds and returns found matcher.
-  List<String> findMatcherLetters(dynamic actual) {
+  List<String> findMatcherLetters(String actual) {
     var matcher = matchers.where(
-      (m) => actual.toString().toLowerCase().contains(m.toLowerCase()),
+      (m) {
+        if (widget.caseSensitive) return actual.contains(m);
+        return actual.toLowerCase().contains(m.toLowerCase());
+      },
     );
 
-    if ('$matcher' == '()') return []; // Means couldn't found matcher
+    if ('$matcher' == '()') return []; // Means couldn't found matcher.
     return '$matcher'.replaceAll('(', '').replaceAll(')', '').split('');
   }
 
@@ -195,6 +217,8 @@ class HighlightTextState extends State<HighlightText> {
       return Text(widget.actualText, style: widget.defaultStyle);
     }
 
-    return RichText(text: TextSpan(text: '', children: subStrings));
+    return RichText(
+      text: TextSpan(text: '', children: subStrings),
+    );
   }
 }
