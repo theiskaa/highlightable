@@ -1,3 +1,17 @@
+## 1.0.3 - (18/10/21)
+
+- Resolved [#6](https://github.com/theiskaa/highlightable/issues/6) (Added case sensitive)support
+
+#### Example:
+
+```dart     
+HighlightText(
+  "Hello, Flutter!",
+  highlightableWord: "flu, He",
+  caseSensitive: true // Turn on case-sensitive. (as default it's false "disabled").
+),
+```
+
 ## 1.0.2 - (15/08/21)
 
 - Added `detectWord` property to focus on concrete matcher words
