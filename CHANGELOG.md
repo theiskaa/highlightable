@@ -1,6 +1,6 @@
 ## 1.0.3 - (18/10/21)
 
-- Resolved [#6](https://github.com/theiskaa/highlightable/issues/6) (Added case sensitive)support
+- Resolved [#6](https://github.com/theiskaa/highlightable/issues/6) (Added case sensitive support)
 
 #### Example:
 
