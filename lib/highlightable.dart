@@ -29,12 +29,17 @@ class HighlightText extends StatefulWidget {
   /// Note: highlighting algorithm would search values inside that [data].
   final String data;
 
-  /// The highlight-matching pattern or highlightable text.
+  /// The highlight searching model. Has two options:
+  ///  ╰─▶ [Pattern] - A regex pattern that would work for each char of [data].
+  ///  ╰─▶ [Words] - A list of highlightable words/letters.
   ///
-  /// An example of highlightable text:
+  /// Example
   /// ```dart
   /// HighlightText(
-  ///   highlight: 'hello world',
+  ///   highlight: Highlight(
+  ///     pattern: r'\d', // Highlight each number in [data].
+  ///     words: ['number', ...], // Highlight defined words in [data].
+  ///   ),
   ///   ...
   /// )
   /// ```
@@ -57,6 +62,13 @@ class HighlightText extends StatefulWidget {
   /// If unset, defaults to the ─▶ [false].
   final bool caseSensitive;
 
+  /// Enables only-word detection.
+  /// It wouldn't highlight [matcher], if it's just a char.
+  /// ╰─> {length == 1}.
+  ///
+  /// If unset, defaults to the ─▶ [false].
+  final bool detectWords;
+
   const HighlightText(
     this.data, {
     Key? key,
@@ -67,6 +79,7 @@ class HighlightText extends StatefulWidget {
       fontWeight: FontWeight.w600,
     ),
     this.caseSensitive = false,
+    this.detectWords = false,
   }) : super(key: key);
 
   @override
@@ -105,7 +118,10 @@ class _HighlightTextState extends State<HighlightText> {
       if (isMatches(el) && !isMatches(hp)) {
         cutHP(_Mode.off);
         // Cut [highlight-part] as [highlight-mode-on].
-      } else if (!isMatches(el) && isMatches(hp)) cutHP(_Mode.on);
+      } else if (!isMatches(el) && isMatches(hp)) {
+        final isNotDetectable = widget.detectWords && hp.length == 1;
+        cutHP(isNotDetectable ? _Mode.off : _Mode.on);
+      }
 
       hp += el;
 
@@ -142,20 +158,19 @@ class _HighlightTextState extends State<HighlightText> {
     if (!widget.caseSensitive) data = data.toLowerCase();
 
     // Check matching by pattern.
-    if (h.pattern != null) {
-      final hasMatch = RegExp(h.pattern!).hasMatch(data);
-      if (hasMatch) return true;
+    if (h.pattern != null && RegExp(h.pattern!).hasMatch(data)) {
+      return true;
     }
 
-    // Check matching by letters/words.
-    if (h.letters != null && h.letters!.isNotEmpty) {
-      for (var i = 0; i < h.letters!.length; i++) {
-        var l = h.letters![i];
+    // Check matching by words/words.
+    if (h.words != null && h.words!.isNotEmpty) {
+      for (var i = 0; i < h.words!.length; i++) {
+        var word = h.words![i];
 
         // Ignore case sensitive.
-        if (!widget.caseSensitive) l = l.toLowerCase();
+        if (!widget.caseSensitive) word = word.toLowerCase();
 
-        if (l.contains(data)) return true;
+        if (word.contains(data) || data.contains(word)) return true;
       }
     }
 
