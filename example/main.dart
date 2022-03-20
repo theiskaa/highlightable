@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:highlightable/highlightable.dart';
 
-void main() => runApp(App());
+void main() => runApp(const App());
 
 class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) => MaterialApp(home: Home());
+  Widget build(BuildContext context) => const MaterialApp(home: Home());
 }
 
 class Home extends StatelessWidget {
@@ -14,44 +16,47 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Highlightable Examples")),
+      appBar: AppBar(title: const Text("Highlightable Examples")),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Very basic usage:
-            HighlightText(
-              'Hello World',
-              highlightable: 'hello',
-              defaultStyle: TextStyle(fontSize: 25, color: Colors.black),
-              highlightStyle: TextStyle(
-                fontSize: 25,
-                color: Colors.blue,
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              // Basic usage.
+              HighlightText(
+                'Only numbers: [10, 25, 50, ...] will be highlighted',
+                // would highlight only numbers.
+                highlight: Highlight(pattern: r'\d'),
               ),
-            ),
 
-            const SizedBox(height: 50),
+              SizedBox(height: 50),
 
-            // Custom Usage
-            HighlightText(
-              "Hello, Flutter!",
-              highlightable: "Flu, He",
-              caseSensitive: true, // Turn on case-sensitive.
-              detectWords: true, // Turn on only full word hightlighting.
-              defaultStyle: TextStyle(
-                fontSize: 25,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+              // Custom Usage
+              HighlightText(
+                "Hello, Flutter!",
+                // Would highlight only "Flutter"
+                // full word 'cause [detectWords] is enabled.
+                highlight: Highlight(
+                  words: ["Flutter"],
+                ),
+                caseSensitive: true, // Turn on case-sensitive.
+                detectWords: true,
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+                highlightStyle: TextStyle(
+                  fontSize: 25,
+                  letterSpacing: 2.5,
+                  color: Colors.white,
+                  backgroundColor: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              highlightStyle: TextStyle(
-                fontSize: 25,
-                letterSpacing: 2.5,
-                color: Colors.white,
-                backgroundColor: Colors.blue,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
