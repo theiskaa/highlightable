@@ -12,12 +12,17 @@ enum _Mode { on, off }
 /// [HighlightText] is a [Text] widget alternative, that makes it easy to highlight
 /// concrete words, defined from [pattern] or from [pure string].
 ///
-///  For Example:
-/// ╭───────────╮
-/// │ Data      │──▶ Hello, World
-/// │ Highlight │──▶ World
-/// ╰───────────╯
-///  ... TODO: Resume drawing diagram
+/// ╭──────╮        Highlight
+/// │ Data │       ╭─────────────────────────────────╮          
+/// ╰──────╯       │ ╭─────────╮   ╭───────────────╮ │
+///    │       ╭──▶│ │ Pattern │ & │ Words/Letters │ │
+///    │       │   │ ╰─────────╯   ╰───────────────╯ │    
+///    │       │   ╰─────────────────────────────────╯           
+///    ╰───────╯
+///        │       
+///    ╭── ▼ ──╮         ╭────────────────────────────╮
+///    │ Parser ───▶ ... │ Highlighted Data as Widget │
+///    ╰───────╯         ╰────────────────────────────╯
 ///
 class HighlightText extends StatefulWidget {
   /// The default string data.
