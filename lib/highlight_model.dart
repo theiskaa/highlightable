@@ -5,7 +5,7 @@
 /// [pattern] would be used as [RegExp] model's pattern to check if data has match.
 /// [letters]'s each element would be compared to data.
 class Highlight {
-    final Pattern? pattern;
+    final String? pattern;
     final List<String>? letters;
 
     const Highlight({this.pattern, this.letters});

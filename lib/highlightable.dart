@@ -136,7 +136,28 @@ class _HighlightTextState extends State<HighlightText> {
   // Matching checker for [parse] method.
   // Would be used to check matching of one letter or split word.
   bool isMatches(String data) {
-    // TODO: Re-write matching algorithm.
+    final h = widget.highlight;
+
+    // Ignore case sensitive.
+    if (!widget.caseSensitive) data = data.toLowerCase();
+
+    // Check matching by pattern.
+    if (h.pattern != null) {
+      final hasMatch = RegExp(h.pattern!).hasMatch(data);
+      if (hasMatch) return true;
+    }
+
+    // Check matching by letters/words.
+    if (h.letters != null && h.letters!.isNotEmpty) {
+      for (var i = 0; i < h.letters!.length; i++) {
+        var l = h.letters![i];
+
+        // Ignore case sensitive.
+        if (!widget.caseSensitive) l = l.toLowerCase();
+
+        if (l.contains(data)) return true;
+      }
+    }
 
     return false;
   }
