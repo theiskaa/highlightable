@@ -1,6 +1,9 @@
 library highlight;
 
 import 'package:flutter/material.dart';
+import 'package:highlightable/highlight_model.dart';
+
+export 'package:highlightable/highlight_model.dart';
 
 // Highlight mode of widget, used as private value.
 // It isn't available for public API.
@@ -35,7 +38,7 @@ class HighlightText extends StatefulWidget {
   ///   ...
   /// )
   /// ```
-  final dynamic highlight;
+  final Highlight highlight;
 
   /// The text style for the text which wouldn't be highlighted.
   ///
@@ -64,11 +67,7 @@ class HighlightText extends StatefulWidget {
       fontWeight: FontWeight.w600,
     ),
     this.caseSensitive = false,
-  })  : assert(
-          highlight != null,
-          'The highlight field cannot be null. Please provide a pattern or highlightable words/letters',
-        ),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   _HighlightTextState createState() => _HighlightTextState();
@@ -81,14 +80,41 @@ class _HighlightTextState extends State<HighlightText> {
   // Compares [data] to [highlight] to catch highlightable and non-highlightable
   // words/letters, which would be the "NEXT" text-span's text data.
   void parse() {
+    // Clear splans before generating.
+    _spans.clear();
+
     String hp = '';
+
+    // Creates a span with [highlight-part] and [highlight-mode].
+    final cutHP = (_Mode mode) {
+      createSpan(hp, mode);
+      hp = '';
+    };
 
     for (var i = 0; i < widget.data.length; i++) {
       final el = widget.data[i];
 
-      // TODO: complete functionality ... 
-      final _ = (hp.isEmpty && isMatches(el)) ||
-          (hp.isNotEmpty && isMatches(hp + el));
+      // Directly add element to
+      // highlight-part when it's empty.
+      if (hp.isEmpty) {
+        hp += el;
+        continue;
+      }
+
+      // Cut [highlight-part] as [highlight-mode-off].
+      if (isMatches(el) && !isMatches(hp)) {
+        cutHP(_Mode.off);
+        // Cut [highlight-part] as [highlight-mode-on].
+      } else if (!isMatches(el) && isMatches(hp)) cutHP(_Mode.on);
+
+      hp += el;
+
+      // Finish cutting highlight-part.
+      if (hp.isNotEmpty && i == widget.data.length - 1) {
+        // Determine mode by matching of [element] and [highlight-part]+[element].
+        final mode = isMatches(el) && isMatches(hp + el) ? _Mode.on : _Mode.off;
+        cutHP(mode);
+      }
     }
   }
 
@@ -110,18 +136,9 @@ class _HighlightTextState extends State<HighlightText> {
   // Matching checker for [parse] method.
   // Would be used to check matching of one letter or split word.
   bool isMatches(String data) {
-    // Regenerate values appropriate to case-sensitive mode.
-    var highlight = widget.highlight;
-    if (!widget.caseSensitive) {
-      data = data.toLowerCase();
-      highlight = widget.highlight.toString().toLowerCase();
-    }
+    // TODO: Re-write matching algorithm.
 
-    // Matching variants:
-    final contains = highlight.contains(data);
-    final hasMatch = RegExp(widget.highlight).hasMatch(data);
-
-    return contains || hasMatch;
+    return false;
   }
 
   @override
