@@ -35,7 +35,7 @@ class Home extends StatelessWidget {
               // Custom Usage
               HighlightText(
                 "Hello, Flutter!",
-                // Would highlight only "Flutter" 
+                // Would highlight only "Flutter"
                 // full word 'cause [detectWords] is enabled.
                 highlight: Highlight(
                   words: ["Flutter"],
