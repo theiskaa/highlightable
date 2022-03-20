@@ -15,46 +15,41 @@
 
 </p>
 
-# Overview & Usage
-
-First, `actualText` property and `highlightableWord` property are required.
-You can customize `actualText` by providing `defaultStyle`. Also you can customize highlighted text style by `highlightStyle` property.
-`highlightableWord` poperty could be string array or just string with spaces. 
-
-You can enable word detection to focus on concrete matcher word. See "Custom usage" part for example.
-
 ### Very basic usage
 
 ```dart
-HighlightText(
-  'Hello World',
-  highlightableWord: 'hello',
-),
+HighlightText(                                          
+  'Only numbers: [10, 25, 50, ...] will be highlighted',
+  // would highlight only numbers.                      
+  highlight: Highlight(pattern: r'\d'),                 
+)
 ```
-
-<img width="200" alt="s1" src="https://user-images.githubusercontent.com/59066341/129080679-bfb97d11-93c5-4258-b271-0e0918e3bc22.png">
+<img width="600" alt="Screen Shot 2022-03-20 at 18 12 28" src="https://user-images.githubusercontent.com/59066341/159167993-31854ab2-011f-4138-97ae-9c83fc202181.png">
 
 ### Custom usage
 
 ```dart     
-HighlightText(
-  "Hello, Flutter!",
-  highlightable: "Flu, He",
+HighlightText(                                   
+  "Hello, Flutter!",                             
+  // Would highlight only "Flutter"              
+  // full word 'cause [detectWords] is enabled.  
+  highlight: Highlight(                          
+    words: ["Flutter"],                          
+  ),                                             
   caseSensitive: true, // Turn on case-sensitive.
-  detectWords: true, // Turn on only full word hightlighting.
-  defaultStyle: TextStyle(
-    fontSize: 25,
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-  ),
-  highlightStyle: TextStyle(
-    fontSize: 25,
-    letterSpacing: 2.5,
-    color: Colors.white,
-    backgroundColor: Colors.blue,
-    fontWeight: FontWeight.bold,
-  ),
-),
+  detectWords: true,                             
+  style: TextStyle(                              
+    fontSize: 25,                                
+    color: Colors.black,                         
+    fontWeight: FontWeight.bold,                 
+  ),                                             
+  highlightStyle: TextStyle(                     
+    fontSize: 25,                                
+    letterSpacing: 2.5,                          
+    color: Colors.white,                         
+    backgroundColor: Colors.blue,                
+    fontWeight: FontWeight.bold,                 
+  ),                                             
+)
 ```
-
-<img width="220" alt="stwo" src="https://user-images.githubusercontent.com/59066341/129483513-c379f0d6-d5ba-43e1-a2d7-0722aeb5dafa.png">
+<img width="400" alt="Screen Shot 2022-03-20 at 18 47 16" src="https://user-images.githubusercontent.com/59066341/159168147-a565e5a6-fcad-4f44-908b-e472ce1517f9.png">
