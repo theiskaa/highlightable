@@ -15,11 +15,12 @@
 
 </p>
 
-### Installing
-- See the official installing guideline from [pub/highlightable/install](https://pub.dev/packages/highlightable/install)
+## Installing
+- See the official installing guideline from [highlightable/install](https://pub.dev/packages/highlightable/install)
 
-### Very basic usage
+## Usage
 
+### _Very basic usage:_
 ```dart
 HighlightText(                                          
   'Only numbers: [10, 25, 50, ...] will be highlighted',
@@ -29,8 +30,7 @@ HighlightText(
 ```
 <img width="600" alt="Screen Shot 2022-03-20 at 18 12 28" src="https://user-images.githubusercontent.com/59066341/159167993-31854ab2-011f-4138-97ae-9c83fc202181.png">
 
-### Custom usage
-
+### _Custom usage:_
 ```dart     
 HighlightText(                                   
   "Hello, Flutter!",                             
