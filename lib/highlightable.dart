@@ -30,8 +30,8 @@ class HighlightText extends StatefulWidget {
   final String data;
 
   /// The highlight searching model. Has two options:
-  ///  ╰─▶ [Pattern] - A regex pattern that would work for each char of [data].
-  ///  ╰─▶ [Words] - A list of highlightable words/letters.
+  /// │─▶ [Pattern] - A regex pattern that would work for each char of [data].
+  /// ╰─▶ [Words] - A list of highlightable words/letters.
   ///
   /// Example
   /// ```dart
@@ -96,6 +96,12 @@ class _HighlightTextState extends State<HighlightText> {
   void parse() {
     // Clear splans before generating.
     _spans.clear();
+
+    // Shouldn't waste time/effort in comparing [data]
+    // to [highlight] object.
+    if (widget.highlight.words == null && widget.highlight.pattern == null) {
+      return;
+    }
 
     String hp = '';
 
