@@ -15,6 +15,9 @@
 
 </p>
 
+### Installing
+- See the official installing guideline from [pub/highlightable/install](https://pub.dev/packages/highlightable/install)
+
 ### Very basic usage
 
 ```dart

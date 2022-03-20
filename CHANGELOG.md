@@ -1,3 +1,26 @@
+## 1.0.4 - (20/03/22)
+
+### Updates:
+
+Resolved [#5](https://github.com/theiskaa/highlightable/issues/5) 
+ - Re-structured the whole widget to improve rendering speed.
+ - Added a new model object to pass Regular-Expression patterns, as higlighting search options.
+
+**The new widget structure:**
+```
+ ╭──────╮        Highlight                                
+ │ Data │       ╭─────────────────────────────────╮       
+ ╰──────╯       │ ╭─────────╮   ╭───────────────╮ │       
+    │       ╭──▶│ │ Pattern │ & │ Words/Letters │ │       
+    │       │   │ ╰─────────╯   ╰───────────────╯ │       
+    │       │   ╰─────────────────────────────────╯       
+    ╰───────╯                                             
+        │                                                 
+    ╭── ▼ ──╮         ╭─────────────────────────────────╮ 
+    │ Parser ───▶ ... │ Highlighted Data as Text Widget │ 
+    ╰───────╯         ╰─────────────────────────────────╯ 
+```
+
 ## 1.0.3 - (18/10/21)
 
 - Resolved [#6](https://github.com/theiskaa/highlightable/issues/6) (Added case sensitive support)
