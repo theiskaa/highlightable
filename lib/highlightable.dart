@@ -49,7 +49,7 @@ class HighlightText extends StatefulWidget {
   ///
   /// It's the style of [data] string,
   /// Would be appended to [non-highlight-matcher] values, from [data].
-  final TextStyle style;
+  final TextStyle? style;
 
   /// The text style for the words/letters which would be highlighted.
   ///
@@ -73,7 +73,7 @@ class HighlightText extends StatefulWidget {
     this.data, {
     Key? key,
     required this.highlight,
-    this.style = const TextStyle(),
+    this.style,
     this.highlightStyle = const TextStyle(
       color: Colors.blue,
       fontWeight: FontWeight.w600,
@@ -87,6 +87,7 @@ class HighlightText extends StatefulWidget {
 }
 
 class _HighlightTextState extends State<HighlightText> {
+  TextStyle? style;
   List<InlineSpan> _spans = [];
 
   // Main method that used to generate text splans.
@@ -143,7 +144,7 @@ class _HighlightTextState extends State<HighlightText> {
   void createSpan(String data, _Mode mode) {
     final textSpan = TextSpan(
       text: data,
-      style: (mode == _Mode.on) ? widget.highlightStyle : widget.style,
+      style: (mode == _Mode.on) ? widget.highlightStyle : style,
     );
 
     _spans.add(textSpan);
@@ -179,12 +180,15 @@ class _HighlightTextState extends State<HighlightText> {
 
   @override
   Widget build(BuildContext context) {
+    // Define style of normal text.
+    style = widget.style ?? Theme.of(context).textTheme.bodyText1;
+
     // Execute [parse] in each build
     // i.e -> [hot-reload].
     parse();
 
     // Build the default text, if there is no spans.
-    if (_spans.isEmpty) return Text(widget.data, style: widget.style);
+    if (_spans.isEmpty) return Text(widget.data, style: style);
 
     // Build the highlighted text with rich-text.
     return RichText(text: TextSpan(text: '', children: _spans));
