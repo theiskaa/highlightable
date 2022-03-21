@@ -1,3 +1,11 @@
+## 1.0.5 - (22/03/22)
+
+### Updates:
+
+Resolved [#12](https://github.com/theiskaa/highlightable/issues/12) 
+ - Updated state behaviour type of [HighlightText] widget.
+ - Improved default-text-determining by theme.
+
 ## 1.0.4 - (20/03/22)
 
 ### Updates:

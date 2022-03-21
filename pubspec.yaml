@@ -1,6 +1,6 @@
 name: highlightable
-description: A text widget that makes it easy to highlight any letter/word you want
-version: 1.0.4
+description: A text widget alternative, that highligts defined chars (from pattern / pure-string)
+version: 1.0.5
 homepage: https://github.com/theiskaa/highlightable
 issue_tracker: https://github.com/theiskaa/highlightable/issues
 documentation: https://github.com/theiskaa/highlightable#readme
