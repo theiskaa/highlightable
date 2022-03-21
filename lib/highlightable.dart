@@ -15,7 +15,7 @@ enum _Mode { on, off }
 /// ╭──────╮        Highlight
 /// │ Data │       ╭─────────────────────────────────╮
 /// ╰──────╯       │ ╭─────────╮   ╭───────────────╮ │
-///    │       ╭──▶│ │ Pattern │ & │ Words/Letters │ │
+///    │       ╭───│ │ Pattern │ & │ Words/Letters │ │
 ///    │       │   │ ╰─────────╯   ╰───────────────╯ │
 ///    │       │   ╰─────────────────────────────────╯
 ///    ╰───────╯
@@ -24,7 +24,7 @@ enum _Mode { on, off }
 ///    │ Parser ───▶ ... │ Highlighted Data as Text Widget │
 ///    ╰───────╯         ╰─────────────────────────────────╯
 ///
-class HighlightText extends StatefulWidget {
+class HighlightText extends StatelessWidget {
   /// The default string data.
   /// Like [Text] widget's first required value.
   ///
@@ -74,7 +74,7 @@ class HighlightText extends StatefulWidget {
   /// If unset, defaults to the ─▶ [false].
   final bool detectWords;
 
-  const HighlightText(
+  HighlightText(
     this.data, {
     Key? key,
     required this.highlight,
@@ -87,61 +87,54 @@ class HighlightText extends StatefulWidget {
     this.detectWords = false,
   }) : super(key: key);
 
-  @override
-  _HighlightTextState createState() => _HighlightTextState();
-}
-
-class _HighlightTextState extends State<HighlightText> {
-  TextStyle? style;
-  List<InlineSpan> _spans = [];
+  // The highlight sequence spans.
+  // Which's actual [rich-text-widget]'s childrens value.
+  final List<InlineSpan> _spans = [];
 
   // Main method that used to generate text splans.
   // Compares [data] to [highlight] to catch highlightable and non-highlightable
   // words/letters, which would be the "NEXT" text-span's text data.
-  void parse() {
-    // Clear splans before generating.
-    _spans.clear();
+  void _parse({
+    required TextStyle ds,
+    required TextStyle hs,
+  }) {
+    if (_spans.isNotEmpty) _spans.clear();
 
-    // Shouldn't waste time/effort in comparing [data]
-    // to [highlight] object.
-    if (widget.highlight.words == null && widget.highlight.pattern == null) {
+    if (highlight.words == null && highlight.pattern == null) {
       return;
     }
 
+    // Matching sequence representer.
     String hp = '';
 
     // Creates a span with [highlight-part] and [highlight-mode].
-    final cutHP = (_Mode mode) {
-      createSpan(hp, mode);
+    void cutHP(_Mode mode) {
+      _createSpan(hp, mode, ds: ds, hs: hs);
       hp = '';
-    };
+    }
 
-    for (var i = 0; i < widget.data.length; i++) {
-      final el = widget.data[i];
-
-      // Directly add element to
-      // highlight-part when it's empty.
+    for (var i = 0; i < data.length; i++) {
       if (hp.isEmpty) {
-        hp += el;
+        hp += data[i];
         continue;
       }
 
       // Cut [highlight-part] as [highlight-mode-off].
-      if (isMatches(el) && !isMatches(hp)) {
+      if (_isMatches(data[i]) && !_isMatches(hp)) {
         cutHP(_Mode.off);
         // Cut [highlight-part] as [highlight-mode-on].
-      } else if (!isMatches(el) && isMatches(hp)) {
-        final isNotDetectable = widget.detectWords && hp.length == 1;
+      } else if (!_isMatches(data[i]) && _isMatches(hp)) {
+        final isNotDetectable = detectWords && hp.length == 1;
         cutHP(isNotDetectable ? _Mode.off : _Mode.on);
       }
 
-      hp += el;
+      hp += data[i];
 
       // Finish cutting highlight-part.
-      if (hp.isNotEmpty && i == widget.data.length - 1) {
+      if (hp.isNotEmpty && i == data.length - 1) {
         // Determine mode by matching of [element] and [highlight-part]+[element].
-        final mode = isMatches(el) && isMatches(hp + el) ? _Mode.on : _Mode.off;
-        cutHP(mode);
+        final matches = _isMatches(data[i]) && _isMatches(hp + data[i]);
+        cutHP(matches ? _Mode.on : _Mode.off);
       }
     }
   }
@@ -152,10 +145,15 @@ class _HighlightTextState extends State<HighlightText> {
   // Mode determines the style of generated text-span.
   // If mode is on, text-span's style would be [highlightStyle].
   // If not, style would be (default)[style].
-  void createSpan(String data, _Mode mode) {
+  void _createSpan(
+    String data,
+    _Mode mode, {
+    required TextStyle ds,
+    required TextStyle hs,
+  }) {
     final textSpan = TextSpan(
       text: data,
-      style: (mode == _Mode.on) ? widget.highlightStyle : style,
+      style: (mode == _Mode.on) ? hs : ds,
     );
 
     _spans.add(textSpan);
@@ -163,25 +161,23 @@ class _HighlightTextState extends State<HighlightText> {
 
   // Matching checker for [parse] method.
   // Would be used to check matching of one letter or split word.
-  bool isMatches(String data) {
-    final h = widget.highlight;
-
+  bool _isMatches(String data) {
     // Ignore case sensitive.
-    if (!widget.caseSensitive) data = data.toLowerCase();
+    if (!caseSensitive) data = data.toLowerCase();
 
     // Check matching by pattern.
-    if (h.pattern != null && RegExp(h.pattern!).hasMatch(data)) {
+    if (highlight.pattern != null &&
+        RegExp(highlight.pattern!).hasMatch(data)) {
       return true;
     }
 
     // Check matching by words/words.
-    if (h.words != null && h.words!.isNotEmpty) {
-      for (var i = 0; i < h.words!.length; i++) {
-        var word = h.words![i];
+    if (highlight.words != null && highlight.words!.isNotEmpty) {
+      for (var i = 0; i < highlight.words!.length; i++) {
+        var word = highlight.words![i];
 
         // Ignore case sensitive.
-        if (!widget.caseSensitive) word = word.toLowerCase();
-
+        if (!caseSensitive) word = word.toLowerCase();
         if (word.contains(data) || data.contains(word)) return true;
       }
     }
@@ -192,14 +188,17 @@ class _HighlightTextState extends State<HighlightText> {
   @override
   Widget build(BuildContext context) {
     // Define style of normal text.
-    style = widget.style ?? Theme.of(context).textTheme.bodyText1;
+    final DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
+    TextStyle effectiveStyle = style ?? defaultTextStyle.style;
+    if (style == null || style!.inherit) {
+      effectiveStyle = defaultTextStyle.style.merge(style);
+    }
 
-    // Execute [parse] in each build
-    // i.e -> [hot-reload].
-    parse();
+    // Generate highlight-sequence text-spans.
+    _parse(ds: effectiveStyle, hs: highlightStyle);
 
     // Build the default text, if there is no spans.
-    if (_spans.isEmpty) return Text(widget.data, style: style);
+    if (_spans.isEmpty) return Text(data, style: effectiveStyle);
 
     // Build the highlighted text with rich-text.
     return RichText(text: TextSpan(text: '', children: _spans));

@@ -22,32 +22,32 @@ class Home extends StatelessWidget {
           padding: const EdgeInsets.all(15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               // Basic usage.
               HighlightText(
-                'Only numbers: [10, 25, 50, ...] will be highlighted',
+                'Only numbers: [1, 25, 50, ...] will be highlighted',
                 // would highlight only numbers.
-                highlight: Highlight(pattern: r'\d'),
+                highlight: const Highlight(pattern: r'\d'),
               ),
 
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
 
               // Custom Usage
               HighlightText(
                 "Hello, Flutter!",
                 // Would highlight only "Flutter"
                 // full word 'cause [detectWords] is enabled.
-                highlight: Highlight(
+                highlight: const Highlight(
                   words: ["Flutter"],
                 ),
                 caseSensitive: true, // Turn on case-sensitive.
                 detectWords: true,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 25,
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
-                highlightStyle: TextStyle(
+                highlightStyle: const TextStyle(
                   fontSize: 25,
                   letterSpacing: 2.5,
                   color: Colors.white,
