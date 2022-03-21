@@ -20,33 +20,33 @@
 
 ## Usage
 
-### _Very basic usage:_
+### _Basic usage:_
 ```dart
-HighlightText(                                          
-  'Only numbers: [10, 25, 50, ...] will be highlighted',
-  // would highlight only numbers.                      
-  highlight: Highlight(pattern: r'\d'),                 
+HighlightText(
+  'Only numbers: [1, 25, 50, ...] will be highlighted',
+  // would highlight only numbers.
+  highlight: const Highlight(pattern: r'\d'),
 )
 ```
-<img width="600" alt="Screen Shot 2022-03-20 at 18 12 28" src="https://user-images.githubusercontent.com/59066341/159167993-31854ab2-011f-4138-97ae-9c83fc202181.png">
+
+<img width="600" alt="basic-usage" src="https://user-images.githubusercontent.com/59066341/159167993-31854ab2-011f-4138-97ae-9c83fc202181.png">
 
 ### _Custom usage:_
 ```dart     
 HighlightText(                                   
   "Hello, Flutter!",                             
-  // Would highlight only "Flutter"              
-  // full word 'cause [detectWords] is enabled.  
-  highlight: Highlight(                          
+  // Would highlight only the "Flutter" full word 'cause [detectWords] is enabled.  
+  highlight: const Highlight(                          
     words: ["Flutter"],                          
   ),                                             
   caseSensitive: true, // Turn on case-sensitive.
-  detectWords: true,                             
-  style: TextStyle(                              
+  detectWords: true,  // Turn on full-word-detection.
+  style: const TextStyle(                              
     fontSize: 25,                                
     color: Colors.black,                         
     fontWeight: FontWeight.bold,                 
   ),                                             
-  highlightStyle: TextStyle(                     
+  highlightStyle: const TextStyle(                     
     fontSize: 25,                                
     letterSpacing: 2.5,                          
     color: Colors.white,                         
@@ -55,4 +55,4 @@ HighlightText(
   ),                                             
 )
 ```
-<img width="400" alt="Screen Shot 2022-03-20 at 18 47 16" src="https://user-images.githubusercontent.com/59066341/159168147-a565e5a6-fcad-4f44-908b-e472ce1517f9.png">
+<img width="400" alt="custom-usage" src="https://user-images.githubusercontent.com/59066341/159168147-a565e5a6-fcad-4f44-908b-e472ce1517f9.png">
