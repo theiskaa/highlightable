@@ -204,5 +204,3 @@ class HighlightText extends StatelessWidget {
     return RichText(text: TextSpan(text: '', children: _spans));
   }
 }
-
-///
